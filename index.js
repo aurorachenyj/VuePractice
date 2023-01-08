@@ -8,6 +8,8 @@ let delProductModal = null;
 const app = {
   data() {
     return {
+      is_new: false,
+      tempImg: "",
       deleteTemp: {},
       productList: [],
       tempProduct: { imagesUrl: [] },
@@ -32,9 +34,7 @@ const app = {
       axios
         .get(`${url}/api/${path}/admin/products`)
         .then((res) => {
-          // console.log(res.data);
           this.productList = res.data.products;
-          // console.log(this.productList);
         })
         .catch((error) => {
           console.log(error);
@@ -48,6 +48,8 @@ const app = {
 
     addNewProduct() {
       //   console.log(this.tempProduct);
+      this.is_new = true;
+      console.log("有跑!!!!");
       productModal.show();
       this.tempProduct = {
         title: this.title,
@@ -58,19 +60,39 @@ const app = {
         content: this.content,
         is_enabled: 1,
         imageUrl: this.imageUrl,
+        imagesUrl: [],
       };
+      console.log(this.tempProduct);
     },
 
-    postNewProduct() {
-      console.log(this.tempProduct);
+    editData(item) {
+      console.log(555);
+      this.tempProduct = { ...item };
+      this.is_new = false;
+      productModal.show();
+      console.log(item);
 
-      axios
-        .post(`${url}/api/${path}/admin/product`, {
-          data: this.tempProduct,
-        })
+      console.log(this.tempProduct);
+      console.log(this.is_new);
+    },
+
+    postProduct() {
+      let apiUrl = `${url}/api/${path}/admin/product`;
+      let method = `post`;
+
+      console.log(this.tempProduct);
+      if (!this.is_new) {
+        apiUrl = `${url}/api/${path}/admin/product/${this.tempProduct.id}`;
+        method = `put`;
+      }
+
+      axios[method](apiUrl, {
+        data: this.tempProduct,
+      })
         .then((res) => {
           console.log(res.data);
           alert(res.data.message);
+
           productModal.hide();
           this.getAllProduct();
         })
@@ -80,6 +102,27 @@ const app = {
         });
     },
 
+    addPicArray() {
+      if (this.tempProduct.imagesUrl === undefined) {
+        this.tempProduct.imagesUrl = [];
+      }
+
+      this.tempProduct.imagesUrl.push(this.tempImg);
+      this.tempImg = "";
+    },
+
+    delPic() {
+      console.log(this.tempProduct.imagesUrl);
+      if (
+        this.tempProduct.imagesUrl === undefined ||
+        this.tempProduct.imagesUrl.length <= 0
+      ) {
+        alert("尚未新增圖片，無法刪除");
+        return;
+      }
+      // console.log(this.tempProduct.imagesUrl);
+      this.tempProduct.imagesUrl.pop();
+    },
     deleteProduct(item) {
       console.log(item);
       this.deleteTemp = item;
@@ -100,6 +143,10 @@ const app = {
           console.log(error);
         });
     },
+
+    // test(item) {
+    //   con;
+    // },
   },
   mounted() {
     // bootstrap Modal 起手式

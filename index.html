@@ -32,7 +32,6 @@
     <div id="app">
       <div class="container">
         <div class="text-end mt-4">
-          {{ productList }}
           <button class="btn btn-primary" @click="addNewProduct">
             建立新的產品
           </button>
@@ -49,8 +48,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in productList" :key="item.id">
-              <td>{{ item.category}}</td>
+            <tr v-for="(item) in productList" :key="item.id">
+              <td>{{ item.category}} {{item.id }}</td>
               <td>{{ item.title}}</td>
               <td class="text-end">{{ item.origin_price}}</td>
               <td class="text-end">{{ item.price}}</td>
@@ -60,7 +59,12 @@
               </td>
               <td>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-outline-primary btn-sm">
+                  <button
+                    :data-id="item.id"
+                    @click="editData(item)"
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                  >
                     編輯
                   </button>
                   <button
@@ -89,7 +93,8 @@
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
               <h5 id="productModalLabel" class="modal-title">
-                <span>新增產品</span>
+                <span v-if="is_new">新增產品</span>
+                <span v-else>修改產品</span>
               </h5>
               <button
                 type="button"
@@ -117,20 +122,42 @@
                   </div>
 
                   <!-- 為何不能寫成 v-if="tempProduct.imagesUrl.length<=0" -->
-                  <div v-if="!tempProduct.imagesUrl">
+                  <!-- <div v-if="!tempProduct.imagesUrl"> -->
+                  <!-- v-if="Array.isArray(tempProduct.imagesUrl)" -->
+                  <div>
                     多圖新增
+                    <input
+                      v-model="tempImg"
+                      type="text"
+                      class="form-control"
+                      placeholder="請輸入圖片連結"
+                    />
+
+                    <img
+                      v-for="(img,index) in tempProduct.imagesUrl"
+                      :key="index"
+                      :src="tempProduct.imagesUrl[index]"
+                      style="margin: 0.5rem 0"
+                    />
+
                     <button
-                      @click="tempProduct.imagesUrl.push()  "
+                      @click="addPicArray()"
                       class="btn btn-outline-primary btn-sm d-block w-100"
                     >
                       新增圖片
                     </button>
                   </div>
-                  <div v-else>
-                    <button class="btn btn-outline-danger btn-sm d-block w-100">
-                      刪除圖片
-                    </button>
-                  </div>
+
+                  <!-- <div v-else> -->
+                  <!-- v-if="tempProduct.imagesUrl.length > 0" -->
+                  <button
+                    @click="delPic"
+                    class="btn btn-outline-danger btn-sm d-block w-100"
+                    style="margin: 0.5rem 0"
+                  >
+                    刪除圖片
+                  </button>
+                  <!-- </div> -->
                 </div>
                 <div class="col-sm-8">
                   <div class="mb-3">
@@ -242,7 +269,7 @@
                 取消
               </button>
               <button
-                @click="postNewProduct"
+                @click="postProduct"
                 type="button"
                 class="btn btn-primary"
               >
