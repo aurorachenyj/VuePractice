@@ -1,7 +1,6 @@
 const url = "https://vue3-course-api.hexschool.io/v2";
 const path = "aurora-path";
 
-// 不太懂 5-6行 為何要這樣寫? 猜測:先宣告起來(用 null 暫時設定)，在mounted裡面把該區域抓取起來
 let productModal = null;
 let delProductModal = null;
 
@@ -25,7 +24,7 @@ const app = {
           this.getAllProduct();
         })
         .catch((error) => {
-          console.log(error);
+          alert(error.response.data.message);
           location.href = "login.html";
         });
     },
@@ -37,50 +36,73 @@ const app = {
           this.productList = res.data.products;
         })
         .catch((error) => {
-          console.log(error);
+          alert(error.response.data.message);
         });
     },
 
-    // showProduct(item) {
-    //   this.temp = item;
-    //   console.log(this.temp);
+    // 優化
+    openModel(item, action) {
+      // 新增 修改 刪除
+      if (action === "add") {
+        this.is_new = true;
+        productModal.show();
+        this.tempProduct = {
+          imagesUrl: [],
+        };
+      } else if (action === "edit") {
+        this.tempProduct = { ...item };
+        this.is_new = false;
+        productModal.show();
+      } else if (action === "del") {
+        this.deleteTemp = item;
+        delProductModal.show();
+      }
+    },
+
+    // 舊寫法
+    // addNewProduct() {
+    //   console.log(this.tempProduct);
+    //   this.is_new = true;
+    //   productModal.show();
+
+    //   this.tempProduct = {
+    //     imagesUrl: [],
+    //   };
+
+    //   // 因為各input欄位有用v-model雙向綁定，所以60-67行不用一個個寫出來
+    //   // this.tempProduct = {
+    //   //   title: this.title,
+    //   //   category: this.category,
+    //   //   origin_price: this.origin_price,
+    //   //   unit: this.unit,
+    //   //   description: this.description,
+    //   //   content: this.content,
+    //   //   is_enabled: 1,
+    //   //   imageUrl: this.imageUrl,
+    //   //   imagesUrl: [],
+    //   // };
     // },
 
-    addNewProduct() {
-      //   console.log(this.tempProduct);
-      this.is_new = true;
-      console.log("有跑!!!!");
-      productModal.show();
-      this.tempProduct = {
-        title: this.title,
-        category: this.category,
-        origin_price: this.origin_price,
-        unit: this.unit,
-        description: this.description,
-        content: this.content,
-        is_enabled: 1,
-        imageUrl: this.imageUrl,
-        imagesUrl: [],
-      };
-      console.log(this.tempProduct);
-    },
+    // editData(item) {
+    //   this.tempProduct = { ...item };
+    //   this.is_new = false;
+    //   productModal.show();
+    //   console.log(item);
 
-    editData(item) {
-      console.log(555);
-      this.tempProduct = { ...item };
-      this.is_new = false;
-      productModal.show();
-      console.log(item);
+    //   console.log(this.tempProduct);
+    //   console.log(this.is_new);
+    // },
 
-      console.log(this.tempProduct);
-      console.log(this.is_new);
-    },
+    // deleteProduct(item) {
+    //   console.log(item);
+    //   this.deleteTemp = item;
+    //   delProductModal.show();
+    // },
 
     postProduct() {
       let apiUrl = `${url}/api/${path}/admin/product`;
       let method = `post`;
 
-      console.log(this.tempProduct);
       if (!this.is_new) {
         apiUrl = `${url}/api/${path}/admin/product/${this.tempProduct.id}`;
         method = `put`;
@@ -90,15 +112,14 @@ const app = {
         data: this.tempProduct,
       })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           alert(res.data.message);
-
           productModal.hide();
           this.getAllProduct();
         })
 
         .catch((error) => {
-          console.log(error);
+          alert(error.response.data.message);
         });
     },
 
@@ -112,7 +133,6 @@ const app = {
     },
 
     delPic() {
-      console.log(this.tempProduct.imagesUrl);
       if (
         this.tempProduct.imagesUrl === undefined ||
         this.tempProduct.imagesUrl.length <= 0
@@ -120,13 +140,8 @@ const app = {
         alert("尚未新增圖片，無法刪除");
         return;
       }
-      // console.log(this.tempProduct.imagesUrl);
+
       this.tempProduct.imagesUrl.pop();
-    },
-    deleteProduct(item) {
-      console.log(item);
-      this.deleteTemp = item;
-      delProductModal.show();
     },
 
     postDeleteProduct() {
@@ -134,19 +149,14 @@ const app = {
       axios
         .delete(`${url}/api/${path}/admin/product/${this.deleteTemp.id}`)
         .then((res) => {
-          console.log(res.data);
           alert(res.data.message);
           delProductModal.hide();
           this.getAllProduct();
         })
         .catch((error) => {
-          console.log(error);
+          alert(error.response.data.message);
         });
     },
-
-    // test(item) {
-    //   con;
-    // },
   },
   mounted() {
     // bootstrap Modal 起手式
@@ -165,7 +175,7 @@ const app = {
       /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
-    // console.log(token);
+
     axios.defaults.headers.common["Authorization"] = token;
     this.checkLogin();
   },

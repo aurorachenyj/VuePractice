@@ -32,7 +32,8 @@
     <div id="app">
       <div class="container">
         <div class="text-end mt-4">
-          <button class="btn btn-primary" @click="addNewProduct">
+          <!-- @click="addNewProduct"  -->
+          <button class="btn btn-primary" @click="openModel(0 ,'add')">
             建立新的產品
           </button>
         </div>
@@ -49,7 +50,7 @@
           </thead>
           <tbody>
             <tr v-for="(item) in productList" :key="item.id">
-              <td>{{ item.category}} {{item.id }}</td>
+              <td>{{ item.category}}</td>
               <td>{{ item.title}}</td>
               <td class="text-end">{{ item.origin_price}}</td>
               <td class="text-end">{{ item.price}}</td>
@@ -61,14 +62,14 @@
                 <div class="btn-group">
                   <button
                     :data-id="item.id"
-                    @click="editData(item)"
+                    @click="openModel(item, 'edit')"
                     type="button"
                     class="btn btn-outline-primary btn-sm"
                   >
                     編輯
                   </button>
                   <button
-                    @click="deleteProduct(item)"
+                    @click="openModel(item,'del')"
                     type="button"
                     class="btn btn-outline-danger btn-sm"
                   >
@@ -121,8 +122,7 @@
                     <img class="img-fluid" :src="tempProduct.imageUrl" alt="" />
                   </div>
 
-                  <!-- 為何不能寫成 v-if="tempProduct.imagesUrl.length<=0" -->
-                  <!-- <div v-if="!tempProduct.imagesUrl"> -->
+                  <!--  v-if="!tempProduct.imagesUrl" -->
                   <!-- v-if="Array.isArray(tempProduct.imagesUrl)" -->
                   <div>
                     多圖新增
