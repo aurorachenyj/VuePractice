@@ -20,11 +20,10 @@ const app = {
       axios
         .post(`${url}/api/user/check`)
         .then((res) => {
-          console.log(res.data);
           this.getAllProduct();
         })
         .catch((error) => {
-          alert(error.response.data.message);
+          alert(error.data.message);
           location.href = "login.html";
         });
     },
@@ -112,14 +111,13 @@ const app = {
         data: this.tempProduct,
       })
         .then((res) => {
-          // console.log(res.data);
           alert(res.data.message);
           productModal.hide();
           this.getAllProduct();
         })
 
         .catch((error) => {
-          alert(error.response.data.message);
+          alert(error.data.message);
         });
     },
 

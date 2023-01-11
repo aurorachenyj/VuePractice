@@ -198,7 +198,7 @@
                     <div class="mb-3 col-md-6">
                       <label for="origin_price" class="form-label">原價</label>
                       <input
-                        v-model="tempProduct.origin_price"
+                        v-model.number="tempProduct.origin_price"
                         id="origin_price"
                         type="number"
                         min="0"
@@ -209,7 +209,7 @@
                     <div class="mb-3 col-md-6">
                       <label for="price" class="form-label">售價</label>
                       <input
-                        v-model="tempProduct.price"
+                        v-model.number="tempProduct.price"
                         id="price"
                         type="number"
                         min="0"
