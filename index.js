@@ -144,6 +144,9 @@ const app = {
 
     postDeleteProduct() {
       console.log(this.deleteTemp);
+
+      // ${this.deleteTemp.id}
+
       axios
         .delete(`${url}/api/${path}/admin/product/${this.deleteTemp.id}`)
         .then((res) => {
@@ -152,7 +155,7 @@ const app = {
           this.getAllProduct();
         })
         .catch((error) => {
-          alert(error.response.data.message);
+          alert(error.data.message);
         });
     },
   },
