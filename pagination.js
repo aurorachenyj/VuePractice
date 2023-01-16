@@ -11,15 +11,15 @@ export default {
   <ul class="pagination justify-content-center">
 
     <li class="page-item"  :class="{ disabled : !pages.has_pre  }"   >
-      <a class="page-link" href="#" aria-label="Previous"  @click="checkPage(pages.current_page - 1 )" >
+      <a class="page-link" href="#" aria-label="Previous"  @click.prevent="checkPage(pages.current_page - 1 )" >
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
 
-    <li class="page-item"  v-for="(page , key  ) in  pages.total_pages" :key="page + page"  :class="{ active: page === pages.current_page }"   ><a class="page-link" href="#"  @click="checkPage(page)" > {{page}} </a></li>
+    <li class="page-item"  v-for="(page , key  ) in  pages.total_pages" :key="page + page"  :class="{ active: page === pages.current_page }"   ><a class="page-link" href="#"  @click.prevent="checkPage(page)" > {{page}} </a></li>
   
     <li class="page-item"   :class="{ disabled:!pages.has_next}"   >
-      <a class="page-link" href="#" aria-label="Next"  @click="checkPage(pages.current_page + 1 )" >
+      <a class="page-link" href="#" aria-label="Next"  @click.prevent="checkPage(pages.current_page + 1 )" >
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

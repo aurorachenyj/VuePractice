@@ -6,15 +6,13 @@ const path = "aurora-path";
 let productModal = null;
 let delProductModal = null;
 
-const app = {
+const app = Vue.createApp({
   data() {
     return {
       is_new: false,
-      tempImg: "",
       deleteTemp: {},
       productList: [],
       pagination: {},
-
       tempProduct: { imagesUrl: [] },
     };
   },
@@ -67,46 +65,6 @@ const app = {
       }
     },
 
-    // 舊寫法
-    // addNewProduct() {
-    //   console.log(this.tempProduct);
-    //   this.is_new = true;
-    //   productModal.show();
-
-    //   this.tempProduct = {
-    //     imagesUrl: [],
-    //   };
-
-    //   // 因為各input欄位有用v-model雙向綁定，所以60-67行不用一個個寫出來
-    //   // this.tempProduct = {
-    //   //   title: this.title,
-    //   //   category: this.category,
-    //   //   origin_price: this.origin_price,
-    //   //   unit: this.unit,
-    //   //   description: this.description,
-    //   //   content: this.content,
-    //   //   is_enabled: 1,
-    //   //   imageUrl: this.imageUrl,
-    //   //   imagesUrl: [],
-    //   // };
-    // },
-
-    // editData(item) {
-    //   this.tempProduct = { ...item };
-    //   this.is_new = false;
-    //   productModal.show();
-    //   console.log(item);
-
-    //   console.log(this.tempProduct);
-    //   console.log(this.is_new);
-    // },
-
-    // deleteProduct(item) {
-    //   console.log(item);
-    //   this.deleteTemp = item;
-    //   delProductModal.show();
-    // },
-
     postProduct() {
       let apiUrl = `${url}/api/${path}/admin/product`;
       let method = `post`;
@@ -129,27 +87,6 @@ const app = {
         .catch((error) => {
           alert(error.data.message);
         });
-    },
-
-    addPicArray() {
-      if (this.tempProduct.imagesUrl === undefined) {
-        this.tempProduct.imagesUrl = [];
-      }
-
-      this.tempProduct.imagesUrl.push(this.tempImg);
-      this.tempImg = "";
-    },
-
-    delPic() {
-      if (
-        this.tempProduct.imagesUrl === undefined ||
-        this.tempProduct.imagesUrl.length <= 0
-      ) {
-        alert("尚未新增圖片，無法刪除");
-        return;
-      }
-
-      this.tempProduct.imagesUrl.pop();
     },
 
     postDeleteProduct() {
@@ -186,6 +123,23 @@ const app = {
     axios.defaults.headers.common["Authorization"] = token;
     this.checkLogin();
   },
-};
+});
 
-Vue.createApp(app).mount("#app");
+app.component("productModalTemplate", {
+  props: ["tempProduct", "is_new", "postProduct"],
+  methods: {
+    createPic() {
+      this.tempProduct.imagesUrl = [];
+      this.tempProduct.imagesUrl.push("");
+    },
+  },
+
+  template: "#modal-dialog-template",
+});
+
+app.component("delModelTemplate", {
+  props: ["deleteTemp", "postDeleteProduct"],
+  template: "#delModel-dialog",
+});
+
+app.mount("#app");
