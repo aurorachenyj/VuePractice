@@ -1,3 +1,5 @@
+import pagination from "./pagination.js";
+
 const url = "https://vue3-course-api.hexschool.io/v2";
 const path = "aurora-path";
 
@@ -11,9 +13,13 @@ const app = {
       tempImg: "",
       deleteTemp: {},
       productList: [],
+      pagination: {},
+
       tempProduct: { imagesUrl: [] },
     };
   },
+
+  components: { pagination },
 
   methods: {
     checkLogin() {
@@ -28,14 +34,17 @@ const app = {
         });
     },
 
-    getAllProduct() {
+    getAllProduct(page = 1) {
+      //預設參數
       axios
-        .get(`${url}/api/${path}/admin/products`)
+        .get(`${url}/api/${path}/admin/products/?page=${page}`)
         .then((res) => {
+          console.log(res);
+          this.pagination = res.data.pagination;
           this.productList = res.data.products;
         })
         .catch((error) => {
-          alert(error.response.data.message);
+          alert(error.data.message);
         });
     },
 
@@ -113,6 +122,7 @@ const app = {
         .then((res) => {
           alert(res.data.message);
           productModal.hide();
+
           this.getAllProduct();
         })
 
@@ -143,10 +153,6 @@ const app = {
     },
 
     postDeleteProduct() {
-      console.log(this.deleteTemp);
-
-      // ${this.deleteTemp.id}
-
       axios
         .delete(`${url}/api/${path}/admin/product/${this.deleteTemp.id}`)
         .then((res) => {

@@ -81,6 +81,21 @@
           </tbody>
         </table>
       </div>
+
+      <!-- 分頁元件 -->
+
+      <!-- :get-all-product 屬性名稱若有大寫要記得改成 -小寫字母 -->
+      <!-- 把父層事件傳進去的寫法 -->
+      <!-- <pagination
+        :pages="pagination"
+        :get-all-product="getAllProduct"
+      ></pagination> -->
+
+      <!-- $emit 寫法 -->
+      <pagination :pages="pagination" @emit-page="getAllProduct"></pagination>
+
+      <!-- 分頁元件 end -->
+
       <!-- Modal -->
       <div
         id="productModal"
