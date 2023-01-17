@@ -159,6 +159,8 @@
                       class="form-control"
                       placeholder="請輸入圖片連結"
                     />
+
+                    <input type="file" id="picFile" @change="uploadPic('main')">
                   </div>
                   <img class="img-fluid" :src="tempProduct.imageUrl" alt="" />
                 </div>
@@ -179,6 +181,7 @@
                         class="form-control"
                         placeholder="請輸入圖片連結"
                       />
+
 
                       <img
                         :src="tempProduct.imagesUrl[key]"

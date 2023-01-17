@@ -127,10 +127,34 @@ const app = Vue.createApp({
 
 app.component("productModalTemplate", {
   props: ["tempProduct", "is_new", "postProduct"],
+  data() {
+    return {
+      picUpload: {},
+    };
+  },
+  mounted() {
+    const picUpload = document.querySelector("#picFile");
+    this.picUpload = picUpload;
+  },
   methods: {
     createPic() {
       this.tempProduct.imagesUrl = [];
       this.tempProduct.imagesUrl.push("");
+    },
+    uploadPic() {
+      const file = this.picUpload.files[0];
+
+      const formData = new FormData();
+      formData.append("file-to-upload", file);
+
+      axios
+        .post(`${url}/api/${path}/admin/upload`, formData)
+        .then((res) => {
+          this.tempProduct.imageUrl = res.data.imageUrl;
+        })
+        .catch((err) => {
+          alert(err.data.message);
+        });
     },
   },
 
